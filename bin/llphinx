@@ -1,7 +1,21 @@
 #!/usr/bin/env php
 <?php
 
-$autoloader = require __DIR__ . '/../src/composer_autoloader.php';
+$autoloader = function () {
+    $files = [
+        __DIR__ . '/../../../autoload.php', // composer dependency
+        __DIR__ . '/../vendor/autoload.php', // stand-alone package
+    ];
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            require_once $file;
+
+            return true;
+        }
+    }
+
+    return false;
+};
 
 if (!$autoloader()) {
     die(
@@ -11,7 +25,7 @@ if (!$autoloader()) {
     );
 }
 
-require_once __DIR__ . '/../../../config/define.php';
+require_once __DIR__ . '/../../../../config/define.php';
 
 // init the factory of bean
 Swoft\Bean\BeanFactory::init();
